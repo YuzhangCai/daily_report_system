@@ -119,19 +119,18 @@ public class EmployeeAction extends ActionBase {
      */
     public void show() throws ServletException, IOException {
 
-        //idを条件に従業員データを取得する
         EmployeeView ev = service.findOne(toNumber(getRequestParam(AttributeConst.EMP_ID)));
 
         if (ev == null || ev.getDeleteFlag() == AttributeConst.DEL_FLAG_TRUE.getIntegerValue()) {
 
-            //データが取得できなかった、または論理削除されている場合はエラー画面を表示
+
             forward(ForwardConst.FW_ERR_UNKNOWN);
             return;
         }
 
-        putRequestScope(AttributeConst.EMPLOYEE, ev); //取得した従業員情報
+        putRequestScope(AttributeConst.EMPLOYEE, ev);
 
-        //詳細画面を表示
+
         forward(ForwardConst.FW_EMP_SHOW);
     }
     /**
@@ -141,22 +140,63 @@ public class EmployeeAction extends ActionBase {
      */
     public void edit() throws ServletException, IOException {
 
-        //idを条件に従業員データを取得する
+
         EmployeeView ev = service.findOne(toNumber(getRequestParam(AttributeConst.EMP_ID)));
 
         if (ev == null || ev.getDeleteFlag() == AttributeConst.DEL_FLAG_TRUE.getIntegerValue()) {
 
-            //データが取得できなかった、または論理削除されている場合はエラー画面を表示
+
             forward(ForwardConst.FW_ERR_UNKNOWN);
             return;
         }
 
-        putRequestScope(AttributeConst.TOKEN, getTokenId()); //CSRF対策用トークン
-        putRequestScope(AttributeConst.EMPLOYEE, ev); //取得した従業員情報
+        putRequestScope(AttributeConst.TOKEN, getTokenId());
+        putRequestScope(AttributeConst.EMPLOYEE, ev);
 
-        //編集画面を表示する
+
         forward(ForwardConst.FW_EMP_EDIT);
 
+    }
+    /**
+     * 更新を行う
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void update() throws ServletException, IOException {
+
+
+        if (checkToken()) {
+
+            EmployeeView ev = new EmployeeView(
+                    toNumber(getRequestParam(AttributeConst.EMP_ID)),
+                    getRequestParam(AttributeConst.EMP_CODE),
+                    getRequestParam(AttributeConst.EMP_NAME),
+                    getRequestParam(AttributeConst.EMP_PASS),
+                    toNumber(getRequestParam(AttributeConst.EMP_ADMIN_FLG)),
+                    null,
+                    null,
+                    AttributeConst.DEL_FLAG_FALSE.getIntegerValue());
+
+            String pepper = getContextScope(PropertyConst.PEPPER);
+
+            List<String> errors = service.update(ev, pepper);
+
+            if (errors.size() > 0) {
+
+
+                putRequestScope(AttributeConst.TOKEN, getTokenId());
+                putRequestScope(AttributeConst.EMPLOYEE, ev);
+                putRequestScope(AttributeConst.ERR, errors);
+
+                forward(ForwardConst.FW_EMP_EDIT);
+            } else {
+
+
+                putSessionScope(AttributeConst.FLUSH, MessageConst.I_UPDATED.getMessage());
+
+                redirect(ForwardConst.ACT_EMP, ForwardConst.CMD_INDEX);
+            }
+        }
     }
 
 }
