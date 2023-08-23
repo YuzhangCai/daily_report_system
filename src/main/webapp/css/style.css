@@ -155,3 +155,8 @@ pre {
 h3 {
     font-size: larger;
 }
+.thumbs {
+    font-size: 14px;
+    padding: 5px 10px;
+    background: url('images/thumbsup.jpg') no-repeat center;
+}

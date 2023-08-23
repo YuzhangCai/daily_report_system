@@ -94,4 +94,10 @@ public class Report {
     @Column(name = JpaConst.REP_COL_UPDATED_AT, nullable = false)
     private LocalDateTime updatedAt;
 
+    /**
+     * いいねの数
+     */
+    @Column(name = JpaConst.REP_THUMBS, length = 255, nullable = false)
+    private int thumbs;
+
 }

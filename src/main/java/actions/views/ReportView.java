@@ -52,4 +52,11 @@ public class ReportView {
      * 更新日時
      */
     private LocalDateTime updatedAt;
+
+    /**
+     * いいねの数
+     */
+    private int thumbs;
+
+
 }

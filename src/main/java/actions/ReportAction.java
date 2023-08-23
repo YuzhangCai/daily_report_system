@@ -101,7 +101,8 @@ public class ReportAction extends ActionBase {
                     getRequestParam(AttributeConst.REP_TITLE),
                     getRequestParam(AttributeConst.REP_CONTENT),
                     null,
-                    null);
+                    null,
+                    0);
 
 
             List<String> errors = service.create(rv);
@@ -202,6 +203,22 @@ public class ReportAction extends ActionBase {
 
             }
         }
+
+
+    }
+    /**
+     * いいねカウントを更新
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void thumbs() throws ServletException, IOException {
+        int reportId = toNumber(getRequestParam(AttributeConst.REP_ID));
+
+        // いいねカウントを更新
+        service.updateThumbs(reportId);
+
+        // 詳細画面にリダイレクト
+        redirect(ForwardConst.ACT_REP, ForwardConst.CMD_INDEX );
     }
 
 }

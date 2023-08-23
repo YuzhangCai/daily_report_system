@@ -150,4 +150,19 @@ public class ReportService extends ServiceBase {
 
     }
 
+    /**
+     * いいねカウントを増やす
+     * @param ID
+     */
+    public void updateThumbs(int reportId) {
+        em.getTransaction().begin();
+        Report report = findOneInternal(reportId);
+        if (report != null) {
+            // いいねカウントを増やす
+            report.setThumbs(report.getThumbs() + 1);
+            em.merge(report);
+        }
+        em.getTransaction().commit();
+    }
+
 }
